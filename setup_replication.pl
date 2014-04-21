@@ -2,6 +2,8 @@
 
 # The point of this script is to make it simple to add a new replica to our LDAP system.
 
+# TODO: If replicapword is not supplied, generate a random one
+
  use Net::LDAPS;
  use strict;
  use Getopt::Long;
