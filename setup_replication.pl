@@ -124,7 +124,7 @@
                                                          'nsds5replicationagreement'],
                       ]
                     );
-     $firstmaster++;
+     $firstmaster--;
    }
    else {
      my $result = $masterldaps->add( "cn=$replicaname,cn=replica,cn=\"dc=pdx,dc=edu\",cn=mapping tree,cn=config",
