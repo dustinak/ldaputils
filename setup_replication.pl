@@ -13,7 +13,8 @@
  my $replicapword;
  my $replicadn = 'cn=replication manager,cn=config';
  my $replicaname;
- my $masterlist; 
+ my $masterlist;
+ my $debugmode = 0;
 
  # Mostly static variables - hence why they aren't changable via command line arguments
  # You need to bind as directory manager, generally, so ya
@@ -24,6 +25,7 @@
          'replicadn=s' => \$replicadn,
          'replicaname=s' => \$replicaname,
          'replicapword=s' => \$replicapword,
+         'debug' => \$debugmode,
          'help|?' => sub { &usage(); },
  );
 
@@ -44,7 +46,13 @@
  ReadMode('noecho'); 
  chomp(my $bindpass = <STDIN>);
  ReadMode(0);
- 
+
+ if ( $debugmode ) {
+   print "DEBUG: Master list: $masterlist\n";
+   print "DEBUG: Replica    : $replicaname\n";
+   print "DEBUG: Replicadn  : $replicadn\n";
+ }
+
  # Do a return after accepting pword
  print "\n";
 
@@ -86,6 +94,11 @@
 
  # Add replication agreement to master
  foreach my $master ( @masters ) {
+
+   if ( $debugmode ) {
+     print "DEBUG: Setting up replication agreement for $master\n";
+   }
+
    my $masterldaps = Net::LDAPS->new($master) or die ("ldap error! $@\n");
    my $mastermesg = $masterldaps->bind( $binddn, password => $bindpass);
 
@@ -122,6 +135,8 @@ sub usage() {
 
   --replicaname=<FQDN>                 FQDN of the new replica server
   --replicapword=<password>            Password for the replication manager account
+
+  --debug                              Toggles on debug mode
 
   --help                    Print usage\n\n");
   exit;
