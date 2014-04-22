@@ -13,14 +13,14 @@
  my $replicapword;
  my $replicadn = 'cn=replication manager,cn=config';
  my $replicaname;
+ my $masterlist; 
 
  # Mostly static variables - hence why they aren't changable via command line arguments
- # You need to bine as directory manager, generally, so ya
+ # You need to bind as directory manager, generally, so ya
  my $binddn = "cn=directory manager";
- # Array list of master LDAP servers to create the replication agreement on
- my @masters = ('owain.oit.pdx.edu');
 
  GetOptions(
+         'masterlist=s' => \$masterlist,
          'replicadn=s' => \$replicadn,
          'replicaname=s' => \$replicaname,
          'replicapword=s' => \$replicapword,
@@ -28,6 +28,7 @@
  );
 
  if ( !defined($binddn) or 
+      !defined($masterlist) or 
       !defined($replicadn) or 
       !defined($replicaname) or 
       !defined($replicapword) 
@@ -35,9 +36,11 @@
    print "ERROR: Missing required values!\n";
    &usage;
  }
-
+ 
+ my @masters = split(/,/,$masterlist);
+ 
  # Get password from the command line
- print "Enter password:";
+ print "Enter Directory Manager password: ";
  ReadMode('noecho'); 
  chomp(my $bindpass = <STDIN>);
  ReadMode(0);
@@ -113,12 +116,12 @@
 sub usage() {
         print("Usage: setup_replication.pl <options> 
 
-  --host=<host>             Hostname or IP address to connect to.
+  --masterlist=<master1,master2..>     Comma seperated list of LDAP masters    
 
-  --binddn=<binddn>         DN to bind to the LDAP server
+  --binddn=<binddn>                    DN to bind to the LDAP server
 
-  --replicaname=<FQDN>      FQDN of the new replica server
-  --replicapword=<password> Password for the replication manager account
+  --replicaname=<FQDN>                 FQDN of the new replica server
+  --replicapword=<password>            Password for the replication manager account
 
   --help                    Print usage\n\n");
   exit;
