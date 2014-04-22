@@ -92,6 +92,8 @@
 
  $replicamesg = $replicaldaps->unbind;
 
+ my $firstmaster = 1;
+
  # Add replication agreement to master
  foreach my $master ( @masters ) {
 
@@ -102,7 +104,12 @@
    my $masterldaps = Net::LDAPS->new($master) or die ("ldap error! $@\n");
    my $mastermesg = $masterldaps->bind( $binddn, password => $bindpass);
 
-   my $result = $masterldaps->add( "cn=$replicaname,cn=replica,cn=\"dc=pdx,dc=edu\",cn=mapping tree,cn=config",
+   # Setup a first master toggle so that the replica is initialized *only* from the first master
+   # on the list. This is done with the nsds5BeginReplicaRefresh attribute. It doesn't matter which
+   # master does the init, just that one of them does it. Makes sense to me to have the first one
+   # do it.
+   if ( $firstmaster ) {
+     my $result = $masterldaps->add( "cn=$replicaname,cn=replica,cn=\"dc=pdx,dc=edu\",cn=mapping tree,cn=config",
                       attrs => [
                         'cn'                         => $replicaname,
                         'nsds5replicahost'           => $replicaname,
@@ -117,6 +124,24 @@
                                                          'nsds5replicationagreement'],
                       ]
                     );
+     $firstmaster++;
+   }
+   else {
+     my $result = $masterldaps->add( "cn=$replicaname,cn=replica,cn=\"dc=pdx,dc=edu\",cn=mapping tree,cn=config",
+                      attrs => [
+                        'cn'                         => $replicaname,
+                        'nsds5replicahost'           => $replicaname,
+                        'nsds5replicaport'           => '636',
+                        'nsds5ReplicaBindDN'         => $replicadn,
+                        'nsds5replicabindmethod'     => 'SIMPLE',
+                        'nsds5replicatransportinfo'  => 'SSL',
+                        'nsds5replicaroot'           => 'dc=pdx,dc=edu',
+                        'nsds5replicacredentials'    => $replicapword,
+                        'objectclass'                => ['top',
+                                                         'nsds5replicationagreement'],
+                      ]
+                    );
+   }
 
    $result->code && die ("failed to add entry: $result->error\n");
 
