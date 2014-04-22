@@ -5,7 +5,6 @@
 # TODO: If replicapword is not supplied, generate a random one
 
  use Net::LDAPS;
- use strict;
  use Getopt::Long;
  use Term::ReadKey;
  use strict;
