@@ -15,6 +15,7 @@
  my $replicaname;
  my $masterlist;
  my $debugmode = 0;
+ my $noinit = 0;
 
  # Mostly static variables - hence why they aren't changable via command line arguments
  # You need to bind as directory manager, generally, so ya
@@ -26,9 +27,11 @@
          'replicaname=s' => \$replicaname,
          'replicapword=s' => \$replicapword,
          'debug' => \$debugmode,
+         'noinit' => \$noinit,
          'help|?' => sub { &usage(); },
  );
 
+ # These are required parameters
  if ( !defined($binddn) or 
       !defined($masterlist) or 
       !defined($replicadn) or 
@@ -107,8 +110,8 @@
    # Setup a first master toggle so that the replica is initialized *only* from the first master
    # on the list. This is done with the nsds5BeginReplicaRefresh attribute. It doesn't matter which
    # master does the init, just that one of them does it. Makes sense to me to have the first one
-   # do it.
-   if ( $firstmaster ) {
+   # do it. Also, only do this if we have NOT set noinit.
+   if ( $firstmaster and !$noinit ) {
      my $result = $masterldaps->add( "cn=$replicaname,cn=replica,cn=\"dc=pdx,dc=edu\",cn=mapping tree,cn=config",
                       attrs => [
                         'cn'                         => $replicaname,
@@ -160,6 +163,8 @@ sub usage() {
 
   --replicaname=<FQDN>                 FQDN of the new replica server
   --replicapword=<password>            Password for the replication manager account
+
+  --noinit                             Do not initialize the replica.
 
   --debug                              Toggles on debug mode
 
