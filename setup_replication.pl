@@ -41,6 +41,8 @@
    print "ERROR: Missing required values!\n";
    &usage;
  }
+
+ #TODO: Sanitize and validate inputs
  
  my @masters = split(/,/,$masterlist);
  
