@@ -62,10 +62,13 @@
  print "\n";
 
  # Setup replication dn on replica
- my $replicaldaps = Net::LDAPS->new($replicaname) or die ("ldap error! $@\n");
- my $replicamesg = $replicaldaps->bind( $binddn, password => $bindpass);
+ # If we're running --noinit, then we can assume the following 2 records are 
+ # already in place
+ if ( !$noinit ) {
+   my $replicaldaps = Net::LDAPS->new($replicaname) or die ("ldap error! $@\n");
+   my $replicamesg = $replicaldaps->bind( $binddn, password => $bindpass);
 
- my $result = $replicaldaps->add( $replicadn,
+   my $result = $replicaldaps->add( $replicadn,
                       attrs => [
                         'cn'                     => 'replication manager',
                         'sn'                     => 'RM',
@@ -76,9 +79,9 @@
                                                     'organizationalPerson'],
                       ]
                     );
- $result->code && die ("failed to add replication manager dn: $result->error\n");
+   $result->code && die ("failed to add replication manager dn: $result->error\n");
 
- $result = $replicaldaps->add( 'cn=replica,cn="dc=pdx,dc=edu",cn=mapping tree,cn=config',
+   $result = $replicaldaps->add( 'cn=replica,cn="dc=pdx,dc=edu",cn=mapping tree,cn=config',
                       attrs => [
                         'cn'                     => 'replica',
                         'nsds5replicaroot'       => 'dc=pdx,dc=edu',
@@ -91,11 +94,15 @@
                       ]
                     );
 
- $result->code && die ("failed to add cn=replica: $result->error\n");
+   $result->code && die ("failed to add cn=replica: $result->error\n");
 
- print " Success: Setup DN for replication on $replicaname.\n";
+   print " Success: Setup DN for replication on $replicaname.\n";
 
- $replicamesg = $replicaldaps->unbind;
+   $replicamesg = $replicaldaps->unbind;
+ }
+ else {
+   print " Assuming cn=replica and cn=replication manager have already been setup.\n";
+ }
 
  my $firstmaster = 1;
 
