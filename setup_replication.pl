@@ -161,11 +161,8 @@
      print " Success: Setup replication agreement between $master and $replicaname.\n";
    }
 
-   $result->code && die ("failed to add replication agreement: $result->error\n");
-
-   print " Success: Setup replication agreement between $master and $replicaname.\n";
-
    $mastermesg = $masterldaps->unbind;
+
  }
  exit;
 
