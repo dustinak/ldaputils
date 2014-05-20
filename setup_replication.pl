@@ -137,6 +137,9 @@
                       ]
                     );
      $firstmaster--;
+     $result->code && die ("failed to add replication agreement: $result->error\n");
+
+     print " Success: Setup replication agreement between $master and $replicaname.\n";
    }
    else {
      my $result = $masterldaps->add( "cn=$replicaname,cn=replica,cn=\"dc=pdx,dc=edu\",cn=mapping tree,cn=config",
@@ -153,9 +156,12 @@
                                                          'nsds5replicationagreement'],
                       ]
                     );
+     $result->code && die ("failed to add replication agreement: $result->error\n");
+
+     print " Success: Setup replication agreement between $master and $replicaname.\n";
    }
 
-   my $result->code && die ("failed to add replication agreement: $result->error\n");
+   $result->code && die ("failed to add replication agreement: $result->error\n");
 
    print " Success: Setup replication agreement between $master and $replicaname.\n";
 
