@@ -170,6 +170,9 @@ sub usage() {
 
   --debug                              Toggles on debug mode
 
-  --help                    Print usage\n\n");
+  --help                               Print usage
+
+  Example: ./setup_replication.pl --replicaname=<replica fqdn> --replicapword=<password> 
+                      --masterlist=<master1, master2, ... masterN>\n\n");
   exit;
 }
