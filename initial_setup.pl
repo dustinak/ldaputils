@@ -5,7 +5,7 @@
 # my life a little easier if I just consolidate all the setup into one 
 # script to rule them all.
 
- use Net::LDAPS;
+ use Net::LDAP;
  use Getopt::Long;
  use Term::ReadKey;
  use strict;
@@ -46,14 +46,14 @@
  # Debug stub
  }
 
- my $ldaps = Net::LDAPS->new("localhost") or die ("ldap error! $@\n");
- my $mesg = $ldaps->bind( $binddn, password => $bindpass);
+ my $ldap = Net::LDAP->new("localhost") or die ("ldap error! $@\n");
+ my $mesg = $ldap->bind( $binddn, password => $bindpass);
 
 
  my $result;
  # Settings in dn:cn=config
  ##########################
- $result = $ldaps->modify( 'cn=config',
+ $result = $ldap->modify( 'cn=config',
                       add => {
                         attrs => [
                           'nsslapd-schemacheck'      => 'off',
@@ -67,7 +67,7 @@
 
  # Settings in dn:cn=encryption,cn=config
  ##########################
- $result = $ldaps->add( 'cn=encryption,cn=config',
+ $result = $ldap->add( 'cn=encryption,cn=config',
                       attrs => [
                         'nsSSL3'      => 'on',
                       ]
@@ -76,7 +76,7 @@
 
  # Settings in cn=RSA,cn=encryption,cn=config
  ##########################
- $result = $ldaps->add( 'cn=RSA,cn=encryption,cn=config',
+ $result = $ldap->add( 'cn=RSA,cn=encryption,cn=config',
                       attrs => [
                         'nsSSLToken'            => 'internal (software)',
                         'nsSSLPersonalitySSL'   => 'Server-Cert',
@@ -94,22 +94,22 @@
 
  # Delete preinstalled indicies
  ##########################
- $result = $ldaps->delete ("cn=account,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=cn,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=givenName,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=mail,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=mailAlternateAddress,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=mailHost,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=member,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=memberOf,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=ntUniqueId,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=ntUserDomainId,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=owner,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=seeAlso,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=sn,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=telephoneNumber,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=uid,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
- $result = $ldaps->delete ("cn=uniquemember,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=account,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=cn,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=givenName,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=mail,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=mailAlternateAddress,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=mailHost,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=member,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=memberOf,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=ntUniqueId,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=ntUserDomainId,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=owner,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=seeAlso,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=sn,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=telephoneNumber,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=uid,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+ $result = $ldap->delete ("cn=uniquemember,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
 
  # Add new indicies
  ##########################
@@ -157,7 +157,7 @@
 
  # Submit task to re-index
  ##########################
- $result = $ldaps->add( 'cn=psuindex, cn=index, cn=tasks, cn=config',
+ $result = $ldap->add( 'cn=psuindex, cn=index, cn=tasks, cn=config',
                       attrs => [
                         'nsInstance'       => 'userRoot',
                         'cn'                    => 'psu account index',
@@ -204,7 +204,7 @@
  $result->code && die ("failed to add index task: $result->error\n");
 
  # Unbind before we exit
- $mesg = $ldaps->unbind;
+ $mesg = $ldap->unbind;
  exit;
 
 
@@ -219,7 +219,7 @@ sub indexadd {
   foreach my $key (keys %ldapIndex) {
     print "Adding $key\n";
 
-    $result = $ldaps->add( "cn=$key,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config",
+    $result = $ldap->add( "cn=$key,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config",
                       attrs => [
                         'nsSystemIndex'              => 'false',
                         'cn'                         => 'cn',
