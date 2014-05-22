@@ -8,3 +8,5 @@
                              for testing the puppet modules to install/setup 389 DS.
 * **bulk_ldap_query.pl**   : This is another simple script that given some attributes and search filters will query LDAP
                              and dump it's results into a csv file. The --help is fairly useful for this script.
+* **initial_setup.pl**     : This script is mostly just a perl wrapper around a number of LDAP calls. The idea behind it
+                             was that this would be a stop-gap until I get puppet to do all of this. 
