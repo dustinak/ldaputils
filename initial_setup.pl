@@ -63,7 +63,8 @@
                         ]
                       }
                     );
- $result->code && die ("failed to add cn=config entries: $result->error\n");
+ $result->code && die ($result->error);
+ print "  SUCCESS: added cn=config entries\n";
 
  # Settings in dn:cn=encryption,cn=config
  ##########################
@@ -72,7 +73,8 @@
                         'nsSSL3'      => 'on',
                       ]
                     );
- $result->code && die ("failed to add cn=config entries: $result->error\n");
+ $result->code && die ("failed to add cn=encryption,cn=config entries: $result->error\n");
+ print "  SUCCESS: added cn=encryption,cn=config entries\n";
 
  # Settings in cn=RSA,cn=encryption,cn=config
  ##########################
@@ -87,6 +89,7 @@
                       ]
                     );
  $result->code && die ("failed to add cn=config entries: $result->error\n");
+ print "  SUCCESS: added cn=RSA,cn=encryption,cn=config\n";
 
  # Import PSU Schema
  ##########################
@@ -110,6 +113,8 @@
  $result = $ldap->delete ("cn=telephoneNumber,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
  $result = $ldap->delete ("cn=uid,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
  $result = $ldap->delete ("cn=uniquemember,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
+
+ print "  Deleted preinstalled indicies\n"; 
 
  # Add new indicies
  ##########################
@@ -203,6 +208,8 @@
                     );
  $result->code && die ("failed to add index task: $result->error\n");
 
+ print "  SUCCESS: submitted reindex task\n";
+
  # Unbind before we exit
  $mesg = $ldap->unbind;
  exit;
@@ -216,9 +223,8 @@
 sub indexadd {
   my %ldapIndex = @_;
 
+  print "  Adding indicies...\n";
   foreach my $key (keys %ldapIndex) {
-    print "Adding $key\n";
-
     $result = $ldap->add( "cn=$key,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config",
                       attrs => [
                         'nsSystemIndex'              => 'false',
@@ -230,6 +236,7 @@ sub indexadd {
                     );
     $result->code && die ("failed to add $key index: $result->error\n");
   }
+  print "  SUCCESS: Added all indicies\n";  
 }
 
 sub usage() {
