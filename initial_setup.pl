@@ -112,7 +112,7 @@
  $result = $ldap->delete ("cn=uid,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
  $result = $ldap->delete ("cn=uniquemember,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config");
 
- print "  Deleted preinstalled indicies\n"; 
+ print "   Deleted preinstalled indicies\n"; 
 
  # Add new indicies
  ##########################
@@ -221,7 +221,7 @@
 sub indexadd {
   my %ldapIndex = @_;
 
-  print "  Adding indicies...\n";
+  print "   Adding indicies...\n";
   foreach my $key (keys %ldapIndex) {
     $result = $ldap->add( "cn=$key,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config",
                       attrs => [
