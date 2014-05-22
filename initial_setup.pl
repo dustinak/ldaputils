@@ -66,10 +66,10 @@
 
  # Settings in dn:cn=encryption,cn=config
  ##########################
- $result = $ldap->add( 'cn=encryption,cn=config',
-                      attrs => [
+ $result = $ldap->modify( 'cn=encryption,cn=config',
+                      add => {
                         'nsSSL3'      => 'on',
-                      ]
+                      }
                     );
  $result->code && die ($result->error);
  print "  SUCCESS: added cn=encryption,cn=config entries\n";
