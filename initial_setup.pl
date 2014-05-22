@@ -73,7 +73,7 @@
                         'nsSSL3'      => 'on',
                       ]
                     );
- $result->code && die ("failed to add cn=encryption,cn=config entries: $result->error\n");
+ $result->code && die ($result->error);
  print "  SUCCESS: added cn=encryption,cn=config entries\n";
 
  # Settings in cn=RSA,cn=encryption,cn=config
@@ -88,7 +88,7 @@
                                                          'nsEncryptionModule'],
                       ]
                     );
- $result->code && die ("failed to add cn=config entries: $result->error\n");
+ $result->code && die ($result->error);
  print "  SUCCESS: added cn=RSA,cn=encryption,cn=config\n";
 
  # Import PSU Schema
@@ -206,7 +206,7 @@
                         'nsIndexAttribute'                    => 'uniquemember',
                       ]
                     );
- $result->code && die ("failed to add index task: $result->error\n");
+ $result->code && die ($result->error);
 
  print "  SUCCESS: submitted reindex task\n";
 
@@ -234,7 +234,7 @@ sub indexadd {
                                                          'nsIndex'],
                       ]
                     );
-    $result->code && die ("failed to add $key index: $result->error\n");
+    $result->code && die ($result->error);
   }
   print "  SUCCESS: Added all indicies\n";  
 }
