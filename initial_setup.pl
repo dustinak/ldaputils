@@ -226,7 +226,7 @@ sub indexadd {
     $result = $ldap->add( "cn=$key,cn=index,cn=userRoot,cn=ldbm database,cn=plugins,cn=config",
                       attrs => [
                         'nsSystemIndex'              => 'false',
-                        'cn'                         => 'cn',
+                        'cn'                         => $key,
                         'nsIndexType'                => $ldapIndex{$key},
                         'objectclass'                => ['top',
                                                          'nsIndex'],
