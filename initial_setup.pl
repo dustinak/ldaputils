@@ -89,6 +89,16 @@
  $result->code && die ($result->error);
  print "  SUCCESS: added cn=RSA,cn=encryption,cn=config\n";
 
+ # Settings in cn=userRoot,cn=ldbm database,cn=plugins,cn=config
+ ##########################
+ $result = $ldap->modify( 'cn=userRoot,cn=ldbm database,cn=plugins,cn=config',
+                      replace => {
+                        'nsslapd-cachememsize'      => '2400000000',
+                      }
+                    );
+ $result->code && die ("ERROR: failed to modify dn cn=userRoot,cn=ldbm database,cn=plugins,cn=config: ".$result->error);
+ print "  SUCCESS: added cn=encryption,cn=config entries\n";
+
  # Import PSU Schema
  ##########################
 
