@@ -67,8 +67,8 @@
  # Settings in dn:cn=encryption,cn=config
  ##########################
  $result = $ldap->modify( 'cn=encryption,cn=config',
-                      add => {
-                        'nsSSL3'      => 'on',
+                      replace => {
+                        'nsSSL3'      => 'off',
                       }
                     );
  $result->code && die ($result->error);
