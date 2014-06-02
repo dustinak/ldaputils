@@ -79,7 +79,7 @@
                                                     'organizationalPerson'],
                       ]
                     );
-   $result->code && die ("failed to add replication manager dn: $result->error\n");
+   $result->code && die ($result->error);
 
    $result = $replicaldaps->add( 'cn=replica,cn="dc=pdx,dc=edu",cn=mapping tree,cn=config',
                       attrs => [
@@ -94,7 +94,7 @@
                       ]
                     );
 
-   $result->code && die ("failed to add cn=replica: $result->error\n");
+   $result->code && die ($result->error);
 
    print " Success: Setup DN for replication on $replicaname.\n";
 
