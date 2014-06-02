@@ -79,7 +79,7 @@
                                                     'organizationalPerson'],
                       ]
                     );
-   $result->code && die ($result->error);
+   $result->code && die ("ERROR: Failed to setup replication manager DN :".$result->error);
 
    $result = $replicaldaps->add( 'cn=replica,cn="dc=pdx,dc=edu",cn=mapping tree,cn=config',
                       attrs => [
@@ -94,7 +94,7 @@
                       ]
                     );
 
-   $result->code && die ($result->error);
+   $result->code && die ("ERROR: Failed to setup cn=replica: ".$result->error);
 
    print " Success: Setup DN for replication on $replicaname.\n";
 
@@ -137,7 +137,7 @@
                       ]
                     );
      $firstmaster--;
-     $result->code && die ("failed to add replication agreement: $result->error\n");
+     $result->code && die ("ERROR: Failed to create replication agreement on master $master :".$result->error);
 
      print " Success: Setup replication agreement between $master and $replicaname.\n";
    }
