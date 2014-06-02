@@ -97,7 +97,7 @@
                       }
                     );
  $result->code && die ("ERROR: failed to modify dn cn=userRoot,cn=ldbm database,cn=plugins,cn=config: ".$result->error);
- print "  SUCCESS: added cn=encryption,cn=config entries\n";
+ print "  SUCCESS: added cn=userRoot,cn=ldbm database,cn=plugins,cn=config entries\n";
 
  # Import PSU Schema
  ##########################
