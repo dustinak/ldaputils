@@ -220,6 +220,10 @@
 
  # Unbind before we exit
  $mesg = $ldap->unbind;
+
+ print " Bouncing dirsrv to apply encryption changes...\n";
+ system('/usr/bin/service dirsrv restart'); 
+ 
  exit;
 
 
