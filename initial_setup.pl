@@ -59,6 +59,7 @@
                           'nsslapd-syntaxcheck'      => 'off',
                           'nsslapd-maxdescriptors'   => '8192',
                           'nsslapd-security'         => 'on',
+                          'nsslapd-accesslog-level'  => '131328',
                       }
                     );
  $result->code && die ($result->error);
