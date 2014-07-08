@@ -5,6 +5,8 @@
 # my life a little easier if I just consolidate all the setup into one 
 # script to rule them all.
 
+# CHANGELOG:
+
  use Net::LDAP;
  use Getopt::Long;
  use Term::ReadKey;
