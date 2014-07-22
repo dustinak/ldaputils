@@ -14,11 +14,13 @@
  my $ldapserver;
  my $infile;
  my $backupfile;
+ my $dryrun = 0;
 
  GetOptions(
          'host=s'      => \$ldapserver,
          'infile=s'    => \$infile,
          'backupfile=s'=> \$backupfile,
+         'dryrun'      => \$dryrun,
          'help|?'      => sub { &usage(); },
  );
 
@@ -82,6 +84,8 @@
      if ( $affil =~/DELETED/ or 
           $affil =~/EXPIRED/ or 
           $affil =~/DISABLED/  or
+          $affil =~/^STUDENT$/  or
+          $affil =~/SYNC/  or
           $affil =~/TERMINATED/ ) {
        next;
      }
@@ -107,11 +111,14 @@
                               );
 
      my @entries = $result->entries;
-     $entries[0]->dump($BACKFH);
+     if ( !$dryrun ) {
+       $entries[0]->dump($BACKFH);
+     }
      
      # Now delete it
-     print "Deleting uid=$delete_uid,ou=people,dc=pdx,dc=edu\n";
-     $ldaps->delete("uid=$delete_uid,ou=people,dc=pdx,dc=edu");
+     if ( !$dryrun ) {
+       $ldaps->delete("uid=$delete_uid,ou=people,dc=pdx,dc=edu");
+     }
    }
    else {
      if ( $oktodelete eq '2' ) { print "ERROR: uid=$delete_uid has invalid eduPersonAffiliation\n"; }
@@ -132,6 +139,10 @@ sub usage() {
 
   --backupfile=</path/to/backupfile>   File that will contain the directory entries we 
                                        delete in LDIF format
+
+  --dryrun                             Enables dryrun mode, in this mode the script will
+                                       just look for inconsistencies, it will not dump
+                                       records nor will it delete records.
   
   --help                               Print usage\n\n");
   exit;
