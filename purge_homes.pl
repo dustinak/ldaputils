@@ -7,7 +7,6 @@
  use Getopt::Long;
  use POSIX;
  use File::Copy;
- use 5.012; # so readdir assigns to $_ in a lone while test
  use strict;
  use warnings;
 
@@ -50,16 +49,18 @@
    exit;
  }
 
- opendir(my $dh, "$diskpath/u/") || die;
+  opendir my($dh), "$diskpath/u/" or die "Couldn't open dir '$diskpath/u/': $!";
+  my @dir_list = readdir $dh;
+  closedir $dh;
 
- while(readdir $dh) {
+  foreach my $dir ( @dir_list ) {
    # Ignore . and .. in the directory listing
-   if ( $_ =~/\./ ) { next; } 
-   if ( $_ =~/\.\./ ) { next; } 
+   if ( $dir =~/\./ ) { next; } 
+   if ( $dir =~/\.\./ ) { next; } 
 
    my $result = $ldaps->search ( base    => "$base",
                                 scope   => "sub",
-                                filter  => "uid=$_",
+                                filter  => "uid=$dir",
                                 attrs   =>  ["uid"]
                               );
 
@@ -67,17 +68,15 @@
    # good to delete
    if ( $result->count eq '0' ) {
      if ( ! $dryrun ) {
-       print "  Moving $diskpath/u/$_ to $diskpath/$deathrow/$_.\n";
-       move("$diskpath/u/$_","$diskpath/$deathrow/$_") or die "ERROR: $!\n";
+       print "  Moving $diskpath/u/$dir to $diskpath/$deathrow/$dir.\n";
+       move("$diskpath/u/$dir","$diskpath/$deathrow/$dir") or die "ERROR: $!\n";
      }
      else {
-       print "  DRYRUN: Moving $diskpath/u/$_ to $diskpath/$deathrow/$_.\n";
+       print "  DRYRUN: Moving $diskpath/u/$dir to $diskpath/$deathrow/$dir.\n";
      }
    }
 
  }
-
- closedir $dh;
 
  # We're done here, nothing to see, move along
  exit;
