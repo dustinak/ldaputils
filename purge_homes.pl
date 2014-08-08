@@ -65,9 +65,12 @@
    # Not sure I like this, but in theory if that returns no entires, we're
    # good to delete
    if ( $result->count eq '0' ) {
-     print "  Moving $diskpath/u/$_ to $diskpath/$deathrow/$_.\n";
      if ( ! $dryrun ) {
+       print "  Moving $diskpath/u/$_ to $diskpath/$deathrow/$_.\n";
        move("$diskpath/u/$_","$diskpath/$deathrow/$_") or die "ERROR: $!\n";
+     }
+     else {
+       print "  DRYRUN: Moving $diskpath/u/$_ to $diskpath/$deathrow/$_.\n";
      }
    }
 
