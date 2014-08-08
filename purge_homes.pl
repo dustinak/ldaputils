@@ -7,6 +7,7 @@
  use Getopt::Long;
  use POSIX;
  use File::Copy;
+ use 5.012; # so readdir assigns to $_ in a lone while test
  use strict;
  use warnings;
 
