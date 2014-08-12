@@ -118,6 +118,8 @@
      # Now delete it
      if ( !$dryrun ) {
        $ldaps->delete("uid=$delete_uid,ou=people,dc=pdx,dc=edu");
+       $ldaps->delete("uid=$delete_uid,ou=group,dc=pdx,dc=edu");
+       # TODO: Need to add bit to delete unix home here
      }
    }
    else {
