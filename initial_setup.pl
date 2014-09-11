@@ -163,7 +163,7 @@
     'seealso'                        => ['eq'],
     'sn'                             => ['eq','approx','sub','pres'],
     'telephonenumber'                => ['eq','sub','pres'],
-    'uid'                            => ['eq'],
+    'uid'                            => ['eq','approx','sub','pres'],
     'uidnumber'                      => ['eq','pres'],
     'uniqueidentifier'               => ['eq','pres'],
     'uniquemember'                   => ['eq'],
