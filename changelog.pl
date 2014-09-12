@@ -13,10 +13,12 @@
  my $uid;
  my $ldapserver;
  my $binddn;
+ my $numchanges = 1000;
 
  GetOptions(
          'uid=s'        => \$uid,
          'binddn=s'     => \$binddn,
+         'changes=s'    => \$numchanges,
          'host=s'       => \$ldapserver,
          'help|?'       => sub { &usage(); },
  );
@@ -60,13 +62,12 @@
 
  my $oldchangenumber;
 
- # We only care about the last 1000 change numbers. Might pull this out to
- # a command line parameter
- if ( $lastchangenumber < 1000 ) {
+ # Determine how far back we look in the changelog
+ if ( $lastchangenumber < $numchanges ) {
    $oldchangenumber = 0;
  }
  else {
-   $oldchangenumber = $lastchangenumber - 1000;
+   $oldchangenumber = $lastchangenumber - $numchanges;
  }
  
  # Now lets pull a list of changes
@@ -104,6 +105,8 @@ sub usage() {
         print("Usage: $0 <options> 
 
   --uid=<user name>                    UID to look at changes for. 
+  
+  --changes=<interger>                 How many changes to look back, defaults to 1000 
 
   --binddn=<ldap dn to bind as>        LDAP DN to bind as
                                        (ex: uid=dustin,ou=people,dc=pdx,dc=edu)
