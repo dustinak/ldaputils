@@ -92,7 +92,7 @@
    print "========================================================\n";
    print "CHANGETIME:$changetime\n";
    print "-------------------------\n";
-   print "CHANGES:$changeldif\n";
+   print "$changeldif\n";
 
  }
 
