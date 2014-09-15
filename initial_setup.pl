@@ -57,7 +57,7 @@
  ##########################
  $result = $ldap->modify( 'cn=config',
                       add => {
-                          'nsslapd-schemacheck'      => 'off',
+                          'nsslapd-schemacheck'      => 'on',
                           'nsslapd-syntaxcheck'      => 'off',
                           'nsslapd-maxdescriptors'   => '8192',
                           'nsslapd-security'         => 'on',
