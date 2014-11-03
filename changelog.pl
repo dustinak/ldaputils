@@ -46,7 +46,7 @@
  # Bind to LDAP server
  my $base = "dc=pdx,dc=edu";
  my $ldaps = Net::LDAPS->new($ldapserver) or die ("ldap error! $@\n");
- my $ldapsmesg = $ldaps->bind( $binddn, password => $bindpass);
+ my $ldapsmesg = $ldaps->bind( $binddn, password => $bindpass) or dir ("ERROR: failed to bind $@\n");
 
  # Get the lastchangenumber
  my $changenumresult = $ldaps->search ( base    => "",
@@ -61,6 +61,8 @@
  my $lastchangenumber = $changenumentries[0]->get_value ('lastchangenumber');
 
  my $oldchangenumber;
+
+ print "Last change: $lastchangenumber\n";
 
  # Determine how far back we look in the changelog
  if ( $lastchangenumber < $numchanges ) {
