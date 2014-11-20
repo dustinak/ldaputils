@@ -74,20 +74,13 @@ my $changesresult = $ldaps->search ( base    => "cn=changelog",
 
 $changesresult->code && die ($changesresult->error);
 
-my @changes = $changesresult->entries;
+print "GOT ", $changesresult->count, " changes\n";
 
-my $resultcount = $changesresult->count;
-
-print "GOT $resultcount changes\n";
-
-foreach my $change ( @changes ) {
-    my $changeldif = $change->get_value ('changes');
-    my $changetime = $change->get_value ('changetime');
-
+foreach my $change ( $changesresult->entries ) {
     print "========================================================\n";
-    print "CHANGETIME:$changetime\n";
+    print "CHANGETIME:", $change->get_value('changetime'), "\n";
     print "-------------------------\n";
-    print "$changeldif\n";
+    print $change->get_value('changes'), "\n";
 }
 
 ## Sub processes
