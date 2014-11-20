@@ -24,10 +24,7 @@ GetOptions(
 );
 
 # These are required parameters
-if ( !defined($uid) or
-     !defined($ldapserver) or
-     !defined($binddn)
-) {
+if ( ! $ldapserver or ! $binddn ) {
     print "ERROR: Missing required values!\n";
     &usage;
 }
