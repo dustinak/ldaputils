@@ -75,10 +75,7 @@ sub search_uid {
     print "GOT ", $changesresult->count, " changes\n";
 
     foreach my $change ( $changesresult->entries ) {
-        print "========================================================\n";
-        print "CHANGETIME:", $change->get_value('changetime'), "\n";
-        print "-------------------------\n";
-        print $change->get_value('changes'), "\n";
+        print_changelog_entry($change);
     }
 
 }
@@ -129,4 +126,13 @@ sub get_last_changenumber {
 
     my $lastchangenumber= $changenumresult->entry(0)->get_value('lastchangenumber')
         or die "Unable to find 'lastchangenumber'; is this the LDAP master?\n";
+}
+
+sub print_changelog_entry {
+    my ($entry) = @_;
+
+    print "========================================================\n";
+    print "CHANGETIME:", $entry->get_value('changetime'), "\n";
+    print "-------------------------\n";
+    print $entry->get_value('changes'), "\n";
 }
