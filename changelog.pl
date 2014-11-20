@@ -57,8 +57,8 @@
 
  $changenumresult->code && die ($changenumresult->error);
 
- my @changenumentries = $changenumresult->entries;
- my $lastchangenumber = $changenumentries[0]->get_value ('lastchangenumber');
+ my $lastchangenumber= $changenumresult->entry(0)->get_value('lastchangenumber')
+    or die "Unable to find 'lastchangenumber'; is this the LDAP master?\n";
 
  my $oldchangenumber;
 
