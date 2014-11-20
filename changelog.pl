@@ -94,8 +94,6 @@ foreach my $change ( @changes ) {
     print "$changeldif\n";
 }
 
-exit;
-
 ## Sub processes
 ############################################
 
