@@ -41,6 +41,17 @@ my $ldaps = Net::LDAPS->new($ldapserver)
 my $ldapsmesg = $ldaps->bind( $binddn, password => $bindpass)
     or die ("ERROR: failed to bind $@\n");
 
+if ($uid) {
+    search_uid($ldaps, $uid, $numchanges);
+}
+else {
+    print STDERR "Missing run mode (uid, tail, etc)!\n";
+    usage();
+}
+
+sub search_uid {
+    my ($ldaps, $uid, $numchanges) = @_;
+
 # Get the lastchangenumber
 my $changenumresult = $ldaps->search ( base    => "",
                                 scope   => "base",
@@ -81,6 +92,8 @@ foreach my $change ( $changesresult->entries ) {
     print "CHANGETIME:", $change->get_value('changetime'), "\n";
     print "-------------------------\n";
     print $change->get_value('changes'), "\n";
+}
+
 }
 
 ## Sub processes
