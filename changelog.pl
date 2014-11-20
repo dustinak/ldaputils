@@ -46,7 +46,7 @@
  # Bind to LDAP server
  my $base = "dc=pdx,dc=edu";
  my $ldaps = Net::LDAPS->new($ldapserver) or die ("ldap error! $@\n");
- my $ldapsmesg = $ldaps->bind( $binddn, password => $bindpass) or dir ("ERROR: failed to bind $@\n");
+ my $ldapsmesg = $ldaps->bind( $binddn, password => $bindpass) or die ("ERROR: failed to bind $@\n");
 
  # Get the lastchangenumber
  my $changenumresult = $ldaps->search ( base    => "",
