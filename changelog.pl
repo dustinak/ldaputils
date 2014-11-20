@@ -49,9 +49,8 @@ else {
 sub search_uid {
     my ($ldaps, $uid, $numchanges) = @_;
 
-    my $lastchangenumber = search_last_changenumber($ldaps);
-
-    my $start_changenumber = calc_start_changenumber($lastchangenumber, $numchanges);
+    my ($start_changenumber, $lastchangenumber) =
+        calc_changenumber_range($ldaps, $numchanges);
 
     printf "Looking for changes between %d and %d (or so)...\n",
         $start_changenumber,
@@ -125,16 +124,18 @@ sub search_last_changenumber {
         or die "Unable to find 'lastchangenumber'; is this the LDAP master?\n";
 }
 
-sub calc_start_changenumber {
-    my ($last, $requested) = @_;
+sub calc_changenumber_range {
+    my ($ldap, $requested) = @_;
+
+    my $last = search_last_changenumber($ldap);
 
     my $start = $last > $requested
               ? $last - $requested
               : 0
               ;
 
-    return $start;
-
+    my @result = ($start, $last);
+    return wantarray ? @result : \@result;
 }
 
 sub print_changelog_entry {
