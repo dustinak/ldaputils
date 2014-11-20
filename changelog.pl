@@ -86,7 +86,7 @@ sub search_uid {
 ## Sub processes
 ############################################
 
-sub usage() {
+sub usage {
     print("Usage: $0 <options>
 
     --uid=<user name>                    UID to look at changes for.
