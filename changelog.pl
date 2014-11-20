@@ -60,17 +60,12 @@
  my $lastchangenumber= $changenumresult->entry(0)->get_value('lastchangenumber')
     or die "Unable to find 'lastchangenumber'; is this the LDAP master?\n";
 
- my $oldchangenumber;
-
  print "Last change: $lastchangenumber\n";
 
- # Determine how far back we look in the changelog
- if ( $lastchangenumber < $numchanges ) {
-   $oldchangenumber = 0;
- }
- else {
-   $oldchangenumber = $lastchangenumber - $numchanges;
- }
+ my $oldchangenumber = $lastchangenumber > $numchanges
+                     ? $lastchangenumber - $numchanges
+                     : 0
+                     ;
  
  # Now lets pull a list of changes
  my $changesresult = $ldaps->search ( base    => "cn=changelog",
