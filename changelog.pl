@@ -52,47 +52,47 @@ else {
 sub search_uid {
     my ($ldaps, $uid, $numchanges) = @_;
 
-# Get the lastchangenumber
-my $changenumresult = $ldaps->search ( base    => "",
-                                scope   => "base",
-                                filter  => "objectclass=*",
-                                attrs   =>  ["lastchangenumber"]
+    # Get the lastchangenumber
+    my $changenumresult = $ldaps->search ( base    => "",
+                                    scope   => "base",
+                                    filter  => "objectclass=*",
+                                    attrs   =>  ["lastchangenumber"]
+                                    );
+
+    $changenumresult->code && die ($changenumresult->error);
+
+    my $lastchangenumber= $changenumresult->entry(0)->get_value('lastchangenumber')
+        or die "Unable to find 'lastchangenumber'; is this the LDAP master?\n";
+
+    my $oldchangenumber = $lastchangenumber > $numchanges
+                        ? $lastchangenumber - $numchanges
+                        : 0
+                        ;
+
+    printf "Looking for changes between %d and %d (or so)...\n",
+        $oldchangenumber,
+        $lastchangenumber;
+
+    my $filter =
+        "(&(changeNumber>=${oldchangenumber})(targetdn=uid=${uid},ou=people,${base}))";
+
+    # Now lets pull a list of changes
+    my $changesresult = $ldaps->search ( base    => "cn=changelog",
+                                        scope   => "sub",
+                                        filter  => $filter,
+                                        attrs   =>  ["changetime","changes"]
                                 );
 
-$changenumresult->code && die ($changenumresult->error);
+    $changesresult->code && die ($changesresult->error);
 
-my $lastchangenumber= $changenumresult->entry(0)->get_value('lastchangenumber')
-    or die "Unable to find 'lastchangenumber'; is this the LDAP master?\n";
+    print "GOT ", $changesresult->count, " changes\n";
 
-my $oldchangenumber = $lastchangenumber > $numchanges
-                    ? $lastchangenumber - $numchanges
-                    : 0
-                    ;
-
-printf "Looking for changes between %d and %d (or so)...\n",
-    $oldchangenumber,
-    $lastchangenumber;
-
-my $filter =
-    "(&(changeNumber>=${oldchangenumber})(targetdn=uid=${uid},ou=people,${base}))";
-
-# Now lets pull a list of changes
-my $changesresult = $ldaps->search ( base    => "cn=changelog",
-                                    scope   => "sub",
-                                    filter  => $filter,
-                                    attrs   =>  ["changetime","changes"]
-                            );
-
-$changesresult->code && die ($changesresult->error);
-
-print "GOT ", $changesresult->count, " changes\n";
-
-foreach my $change ( $changesresult->entries ) {
-    print "========================================================\n";
-    print "CHANGETIME:", $change->get_value('changetime'), "\n";
-    print "-------------------------\n";
-    print $change->get_value('changes'), "\n";
-}
+    foreach my $change ( $changesresult->entries ) {
+        print "========================================================\n";
+        print "CHANGETIME:", $change->get_value('changetime'), "\n";
+        print "-------------------------\n";
+        print $change->get_value('changes'), "\n";
+    }
 
 }
 
