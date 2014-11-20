@@ -49,7 +49,7 @@ else {
 sub search_uid {
     my ($ldaps, $uid, $numchanges) = @_;
 
-    my $lastchangenumber = get_last_changenumber($ldaps);
+    my $lastchangenumber = search_last_changenumber($ldaps);
 
     my $oldchangenumber = $lastchangenumber > $numchanges
                         ? $lastchangenumber - $numchanges
@@ -112,7 +112,7 @@ sub read_password {
     return $password;
 }
 
-sub get_last_changenumber {
+sub search_last_changenumber {
     my ($ldap) = @_;
 
     # Get the lastchangenumber
