@@ -32,16 +32,7 @@ if ( !defined($uid) or
     &usage;
 }
 
-
-# Get password from the command line
-my $bindpass;
-print "Enter LDAP password: ";
-ReadMode('noecho');
-chomp($bindpass = <STDIN>);
-ReadMode(0);
-
-# Return after we get password
-print "\n";
+my $bindpass = read_password();
 
 # Bind to LDAP server
 my $base = "dc=pdx,dc=edu";
@@ -111,4 +102,17 @@ sub usage() {
 
     --help                               Print usage\n\n");
     exit;
+}
+
+sub read_password {
+    my $password;
+    print "Enter LDAP password: ";
+    ReadMode('noecho');
+    chomp($password = <STDIN>);
+    ReadMode(0);
+
+    # Return after we get password
+    print "\n";
+
+    return $password;
 }
