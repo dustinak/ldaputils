@@ -46,11 +46,11 @@ else {
     usage();
 }
 
-sub search_uid {
-    my ($ldaps, $uid, $numchanges) = @_;
+sub get_last_changenumber {
+    my ($ldap) = @_;
 
     # Get the lastchangenumber
-    my $changenumresult = $ldaps->search ( base    => "",
+    my $changenumresult = $ldap->search ( base    => "",
                                     scope   => "base",
                                     filter  => "objectclass=*",
                                     attrs   =>  ["lastchangenumber"]
@@ -60,6 +60,12 @@ sub search_uid {
 
     my $lastchangenumber= $changenumresult->entry(0)->get_value('lastchangenumber')
         or die "Unable to find 'lastchangenumber'; is this the LDAP master?\n";
+}
+
+sub search_uid {
+    my ($ldaps, $uid, $numchanges) = @_;
+
+    my $lastchangenumber = get_last_changenumber($ldaps);
 
     my $oldchangenumber = $lastchangenumber > $numchanges
                         ? $lastchangenumber - $numchanges
