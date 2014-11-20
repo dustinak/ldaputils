@@ -51,17 +51,14 @@ sub search_uid {
 
     my $lastchangenumber = search_last_changenumber($ldaps);
 
-    my $oldchangenumber = $lastchangenumber > $numchanges
-                        ? $lastchangenumber - $numchanges
-                        : 0
-                        ;
+    my $start_changenumber = calc_start_changenumber($lastchangenumber, $numchanges);
 
     printf "Looking for changes between %d and %d (or so)...\n",
-        $oldchangenumber,
+        $start_changenumber,
         $lastchangenumber;
 
-    my $filter =
-        "(&(changeNumber>=${oldchangenumber})(targetdn=uid=${uid},ou=people,${base}))";
+    my $filter = "(&(changeNumber>=${start_changenumber})"
+               . "(targetdn=uid=${uid},ou=people,${base}))";
 
     # Now lets pull a list of changes
     my $changesresult = $ldaps->search ( base    => "cn=changelog",
@@ -126,6 +123,18 @@ sub search_last_changenumber {
 
     my $lastchangenumber= $changenumresult->entry(0)->get_value('lastchangenumber')
         or die "Unable to find 'lastchangenumber'; is this the LDAP master?\n";
+}
+
+sub calc_start_changenumber {
+    my ($last, $requested) = @_;
+
+    my $start = $last > $requested
+              ? $last - $requested
+              : 0
+              ;
+
+    return $start;
+
 }
 
 sub print_changelog_entry {
