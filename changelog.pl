@@ -46,22 +46,6 @@ else {
     usage();
 }
 
-sub get_last_changenumber {
-    my ($ldap) = @_;
-
-    # Get the lastchangenumber
-    my $changenumresult = $ldap->search ( base    => "",
-                                    scope   => "base",
-                                    filter  => "objectclass=*",
-                                    attrs   =>  ["lastchangenumber"]
-                                    );
-
-    $changenumresult->code && die ($changenumresult->error);
-
-    my $lastchangenumber= $changenumresult->entry(0)->get_value('lastchangenumber')
-        or die "Unable to find 'lastchangenumber'; is this the LDAP master?\n";
-}
-
 sub search_uid {
     my ($ldaps, $uid, $numchanges) = @_;
 
@@ -129,4 +113,20 @@ sub read_password {
     print "\n";
 
     return $password;
+}
+
+sub get_last_changenumber {
+    my ($ldap) = @_;
+
+    # Get the lastchangenumber
+    my $changenumresult = $ldap->search ( base    => "",
+                                    scope   => "base",
+                                    filter  => "objectclass=*",
+                                    attrs   =>  ["lastchangenumber"]
+                                    );
+
+    $changenumresult->code && die ($changenumresult->error);
+
+    my $lastchangenumber= $changenumresult->entry(0)->get_value('lastchangenumber')
+        or die "Unable to find 'lastchangenumber'; is this the LDAP master?\n";
 }
