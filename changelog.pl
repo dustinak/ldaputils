@@ -36,8 +36,10 @@ my $bindpass = read_password();
 
 # Bind to LDAP server
 my $base = "dc=pdx,dc=edu";
-my $ldaps = Net::LDAPS->new($ldapserver) or die ("ldap error! $@\n");
-my $ldapsmesg = $ldaps->bind( $binddn, password => $bindpass) or die ("ERROR: failed to bind $@\n");
+my $ldaps = Net::LDAPS->new($ldapserver)
+    or die ("ldap error! $@\n");
+my $ldapsmesg = $ldaps->bind( $binddn, password => $bindpass)
+    or die ("ERROR: failed to bind $@\n");
 
 # Get the lastchangenumber
 my $changenumresult = $ldaps->search ( base    => "",
@@ -60,10 +62,13 @@ printf "Looking for changes between %d and %d (or so)...\n",
     $oldchangenumber,
     $lastchangenumber;
 
+my $filter =
+    "(&(changeNumber>=${oldchangenumber})(targetdn=uid=${uid},ou=people,${base}))";
+
 # Now lets pull a list of changes
 my $changesresult = $ldaps->search ( base    => "cn=changelog",
                                     scope   => "sub",
-                                    filter  => "(&(changeNumber>=$oldchangenumber)(targetdn=uid=$uid,ou=people,dc=pdx,dc=edu))",
+                                    filter  => $filter,
                                     attrs   =>  ["changetime","changes"]
                             );
 
