@@ -1,4 +1,4 @@
-#!/bin/env perl
+#!/usr/bin/env perl
 
 # This script is intented to be used in debuging LDAP changes. It queries the changelog
 # and will decode the changes field for easy human consumption
@@ -13,10 +13,12 @@ use warnings;
 my $uid;
 my $ldapserver;
 my $binddn;
+my $base;
 my $numchanges = 1000;
 
 GetOptions(
         'uid=s'        => \$uid,
+        'base=s'       => \$base,
         'binddn=s'     => \$binddn,
         'changes=s'    => \$numchanges,
         'host=s'       => \$ldapserver,
@@ -32,7 +34,6 @@ if ( ! $ldapserver or ! $binddn ) {
 my $bindpass = read_password();
 
 # Bind to LDAP server
-my $base = "dc=pdx,dc=edu";
 my $ldaps = Net::LDAPS->new($ldapserver)
     or die ("ldap error! $@\n");
 my $ldapsmesg = $ldaps->bind( $binddn, password => $bindpass)
@@ -83,11 +84,13 @@ sub usage {
     print("Usage: $0 <options>
 
     --uid=<user name>                    UID to look at changes for.
+    
+    --base=<base dn>                     Base DN of the directory we're looking in 
 
     --changes=<interger>                 How many changes to look back, defaults to 1000
 
     --binddn=<ldap dn to bind as>        LDAP DN to bind as
-                                        (ex: uid=dustin,ou=people,dc=pdx,dc=edu)
+                                        (ex: uid=jsmith,ou=people,dc=example,dc=com)
 
     --host=<ldap server>                 Server to look at for changelog entries
 
